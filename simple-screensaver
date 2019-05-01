@@ -1,0 +1,32 @@
+#!/bin/bash
+#Simple Screen Locker for Cinnamon screensaver
+
+pos_old=$(xdotool getmouselocation --shell)
+counter=0
+locked=0
+minutes=$(cat ~/.config/simple-screensaver/zeit)
+let zeit=$minutes*60
+
+while true
+do
+	pos_new=$(xdotool getmouselocation --shell)
+	if [ "$pos_old" = "$pos_new" ]
+	then
+		let counter=counter+1
+	else
+		counter=0
+		locked=0
+	fi
+	
+	pos_old=$pos_new
+	sleep 1
+		
+	if [ $counter -eq $zeit ]
+	then
+		if [ $locked -eq 0 ]
+		then
+			cinnamon-screensaver-command -l
+			locked=1
+		fi
+	fi
+done
